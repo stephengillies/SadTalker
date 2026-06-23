@@ -32,7 +32,7 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                     <a style='font-size:18px;color: #efefef' href='https://sadtalker.github.io'>Homepage</a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \
                      <a style='font-size:18px;color: #efefef' href='https://github.com/Winfredy/SadTalker'> Github </div>")
         
-        with gr.Row().style(equal_height=False):
+        with gr.Row(equal_height=False):
             with gr.Column(variant='panel'):
                 with gr.Tabs(elem_id="sadtalker_source_image"):
                     with gr.TabItem('Upload image'):
@@ -46,12 +46,17 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
 
                         if sys.platform != 'win32' and not in_webui: 
                             from src.utils.text2speech import TTSTalker
-                            tts_talker = TTSTalker()
+                            tts_talker = None
                             with gr.Column(variant='panel'):
                                 input_text = gr.Textbox(label="Generating audio from text", lines=5, placeholder="please enter some text here, we genreate the audio from text using @Coqui.ai TTS.")
-                                tts = gr.Button('Generate audio',elem_id="sadtalker_audio_generate", variant='primary')
-                                tts.click(fn=tts_talker.test, inputs=[input_text], outputs=[driven_audio])
-                            
+                                tts = gr.Button(
+                                    'Generate audio',
+                                    elem_id="sadtalker_audio_generate",
+                                    variant='primary',
+                                    visible=(tts_talker is not None)
+                                    )
+                             if tts_talker is not None:
+                                tts.click(fn=tts_talker.test, inputs=[input_text], outputs=[driven_audio])                            
             with gr.Column(variant='panel'): 
                 with gr.Tabs(elem_id="sadtalker_checkbox"):
                     with gr.TabItem('Settings'):
